@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:english_memory_app/package/quote/quote.dart';
 import 'package:english_memory_app/package/quote/quote_model.dart';
+import 'package:english_memory_app/widgets/app_button.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:english_memory_app/values/app_assets.dart';
@@ -46,9 +47,9 @@ class _HomePageState extends State<HomePage> {
   getEnglishToday() {
     List<String> newList = [];
     List<int> rans = fixedListRamdom(len: 5, max: nouns.length);
-    rans.forEach((index) {
+    for (var index in rans) {
       newList.add(nouns[index]);
-    });
+    }
 
     words = newList.map((word) {
       return getQuote(word);
@@ -61,6 +62,8 @@ class _HomePageState extends State<HomePage> {
     return EnglishToday(noun: noun, quote: quote?.content, id: quote?.id);
   }
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     _pageController = PageController(viewportFraction: 0.9);
@@ -72,13 +75,16 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: AppColors.lightBlue,
       appBar: AppBar(
         backgroundColor: AppColors.lightBlue,
         elevation: 0,
         title: Text('English today', style: AppStyles.h4.copyWith(color: AppColors.textColor, fontSize: 36)),
         leading: InkWell(
-          onTap: () {},
+          onTap: () {
+            _scaffoldKey.currentState?.openDrawer();
+          },
           child: Image.asset(AppAssets.menu),
         ),
       ),
@@ -193,6 +199,32 @@ class _HomePageState extends State<HomePage> {
           });
         },
         child: Image.asset(AppAssets.exchange),
+      ),
+      drawer: Drawer(
+        child: Container(
+            color: AppColors.lightBlue,
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 24, left: 24),
+                child: Text('Your mind', style: AppStyles.h3.copyWith(color: AppColors.textColor)),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24),
+                child: AppButton(
+                    label: 'Favorites',
+                    onTap: () {
+                      debugPrint('Favorites');
+                    }),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24),
+                child: AppButton(
+                    label: 'Your control',
+                    onTap: () {
+                      debugPrint('Your control');
+                    }),
+              )
+            ])),
       ),
     );
   }
